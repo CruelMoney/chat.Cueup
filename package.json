@@ -11,17 +11,17 @@
     "node": ">=8.5.0"
   },
   "scripts": {
-    "prestart": "yarn build:server",
-    "precommit": "yarn lint && yarn test",
-    "prepush": "yarn lint && yarn test",
+    "prestart": "npm run build:server",
+    "precommit": "npm run lint && npm run test",
+    "prepush": "npm run lint && npm run test",
     "start": "node dist/server/index.js",
     "dev": "nodemon --exec DEBUG=node* node_modules/babel-cli/bin/babel-node.js server",
-    "build": "yarn build:server",
+    "build": "npm run build:server",
     "build:server": "node_modules/babel-cli/bin/babel.js server --out-dir dist/server --verbose",
     "lint": "node_modules/eslint-watch/bin/esw *.js server config --color",
-    "lint:watch": "yarn lint -- --watch",
+    "lint:watch": "npm run lint -- --watch",
     "test": "cross-env NODE_ENV=test babel-node node_modules/mocha/bin/_mocha -- --ui bdd --reporter spec --colors --compilers js:babel-core/register ./server/**/*.test.js",
-    "test:watch": "yarn test -- --watch"
+    "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
