@@ -13,12 +13,7 @@ mongoose.Promise = Promise;
 
 // connect to mongo db
 mongoose.connect(config.db, { 
-  useMongoClient: true,
-  server: { 
-    socketOptions: { 
-      keepAlive: 1 
-    } 
-  } 
+  useMongoClient: true
 });
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database: ${config.db}`);
@@ -31,10 +26,13 @@ if (config.MONGOOSE_DEBUG) {
   });
 }
 
-// listen on port config.port
-app.listen(config.port, () => {
-  debug(`server started on port ${config.port} (${config.env})`);
-});
-
+// module.parent check is required to support mocha watch
+// src: https://github.com/mochajs/mocha/issues/1912
+if (!module.parent) {
+  // listen on port config.port
+  app.listen(config.port, () => {
+    console.log(`🚀 server started on port ${config.port} (${config.env})`)
+  });
+}
 
 export default app;
