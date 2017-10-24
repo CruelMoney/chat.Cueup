@@ -1,5 +1,4 @@
 import path from 'path';
-require('dotenv').config();
 
 const _ = require('lodash');
 
