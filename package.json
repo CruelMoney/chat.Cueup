@@ -1,0 +1,9 @@
+{
+  "name": "chat.cueup",
+  "version": "1.0.0",
+  "description": "Chat API originally used for Cueup",
+  "main": "index.js",
+  "repository": "https://github.com/CruelMoney/chat.Cueup.git",
+  "author": "Christopher Dengsø",
+  "license": "MIT"
+}
