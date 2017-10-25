@@ -1,13 +1,12 @@
-import express from 'express';
-import apiRoutes from './apiRoutes/index.route';
-import middleware from './middleware/index.middle'
+import IO from 'socket.io';
+import messageRoutes from './listeners/message.route';
+import auth from './middleware/auth0.middle'
 
-const router = express.Router(); // eslint-disable-line new-cap
+export default (server) =>{
+  
+    const io = IO(server);
 
-// Hook middleware
-router.use(middleware);
-
-// mount apiRoutes routes at /
-router.use('/', apiRoutes);
-
-export default router;
+   // auth(io);
+    messageRoutes(io);
+    
+}

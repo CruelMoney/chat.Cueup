@@ -16,6 +16,7 @@ import APIError from '../helpers/APIError';
 
 const app = express();
 
+
 if (config.env === 'development') {
   app.use(logger('dev'));
 }
@@ -45,12 +46,6 @@ if (config.env === 'development') {
     colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
   }));
 }
-
-// app.use('/api', (req, res, next) => {
-//   const authorization = req.header('authorization');
-//   res.locals.session = JSON.parse(new Buffer((authorization.split(' ')[1]).split('.')[1], 'base64').toString()); // eslint-disable-line no-param-reassign
-//   next();
-// });
 
 // mount all routes on / path
 app.use('/', routes);
