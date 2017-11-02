@@ -1,12 +1,11 @@
 import messageCtr from '../../controllers/message.controller';
+import notificaitonCtr from '../../controllers/notification.controller';
 
 
-export default (io) => {
-
-  io.on('connection', function(socket){
+export default (socket) => {
     
     const room = socket.handshake.query.room;
-    if(!!!room) return socket.disconnect(true);
+    if(!!!room) return
       
     socket.join(room, () => {
       // sending to all clients in room except sender      
@@ -19,7 +18,10 @@ export default (io) => {
   
     socket.on('send message', (msg, fn)=>{
       socket.to(room).emit('stopped typing');
-      messageCtr.sendMessage(msg, room, socket, fn);
+      messageCtr.sendMessage(msg, room, socket, fn)
+        .then(savedMsg=>{
+          notificaitonCtr.newMessageNotification(savedMsg, msg, socket);      
+        });
     });
   
     socket.on('started typing', ()=>{
@@ -32,6 +34,5 @@ export default (io) => {
     socket.on('messages read', (senderId)=>{
       messageCtr.readMessages(senderId, room, socket);
     });
-    
-  });
+  
 }

@@ -1,16 +1,8 @@
-import APIError from '../helpers/APIError';
+import APIError, {handleError} from '../helpers/APIError';
 import Message from '../models/message.model';
 import httpStatus from 'http-status';
 import config from '../config/env';
 
-
-function handleError(e){
-  return {
-    status: e.status || httpStatus.INTERNAL_SERVER_ERROR,
-    error: e.message,
-    stack: config.env === 'development' ? e.stack : {}
-  }
-}
 
 /**
  * Create new message
@@ -23,6 +15,7 @@ function sendMessage(msg, room, socket, cb) {
     .then(savedMessage => {
       socket.to(room).emit('new message', savedMessage);
       cb(savedMessage)
+      return savedMessage;
     })
     .catch(e => {
       cb(handleError(new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)))
@@ -30,10 +23,10 @@ function sendMessage(msg, room, socket, cb) {
 }
 
 /**
- * Get message of a specific receiver.
+ * Get message of a specific room.
  */
 function listChat(room, socket) {
-  Message.find({ to: room })
+  Message.find({ room: room })
     .then(messages => {
       socket.emit('initialize chat', messages)})
     .catch(e => {});
@@ -45,7 +38,7 @@ function listChat(room, socket) {
 function readMessages(senderId, room, socket) {
   Message.update(
     { 
-      to: room, 
+      room: room, 
       from: {$ne: senderId}
     },
     { $set: { read: true } },
@@ -56,4 +49,28 @@ function readMessages(senderId, room, socket) {
     .catch(e => {});
 }
 
-export default { sendMessage, listChat, readMessages };
+/**
+ * Get chats status. Each key represents a room.
+ * @returns {Object}
+ */
+function getUserChatStatus(userId, socket, cb){
+  Message.find({to: userId})
+    .then(messages => {
+      const status = messages.reduce((acc, msg) =>{
+            const read = msg.read ? 1 : 0;
+            return {
+              ...acc,
+              [msg.room] :{
+                read: acc[msg.room] ? (acc[msg.room].read + read) : read,
+                total: acc[msg.room] ? (acc[msg.room].total + 1) : 1,
+              }
+            }
+          }, {})
+      cb(status)
+    })
+    .catch(e => {
+      cb(handleError(new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)))
+    })
+}
+
+export default { sendMessage, listChat, readMessages, getUserChatStatus };

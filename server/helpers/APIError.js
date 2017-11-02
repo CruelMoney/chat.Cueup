@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-
+import config from '../config/env'
 /**
  * @extends Error
  */
@@ -28,6 +28,14 @@ class APIError extends ExtendableError {
    */
   constructor(message, status = httpStatus.INTERNAL_SERVER_ERROR, isPublic = false) {
     super(message, status, isPublic);
+  }
+}
+
+export function handleError(e){
+  return {
+    status: e.status || httpStatus.INTERNAL_SERVER_ERROR,
+    error: e.message,
+    stack: config.env === 'development' ? e.stack : {}
   }
 }
 

@@ -14,6 +14,10 @@ const MessageSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  room:{
+    type: String,
+    required: true
+  },
   content:{
     type: String,
     required: true
@@ -37,7 +41,18 @@ const MessageSchema = new mongoose.Schema({
 /**
  * Methods
  */
-MessageSchema.method({});
+MessageSchema.method({
+  toNotification(){
+    return {
+      content: "You have an unread message 📫",
+      read: this.read,
+      createdAt: this.createdAt,
+      userId: this.to,
+      room: this.room
+    }
+  }
+
+});
 
 /**
  * Statics
@@ -82,6 +97,8 @@ MessageSchema.statics = {
       .limit(limit)
       .exec();
   }
+
+
 };
 
 /**
