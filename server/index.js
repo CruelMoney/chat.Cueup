@@ -1,42 +1,39 @@
-import mongoose from 'mongoose';
-import util from 'util';
-import config from './config/env';
-import app from './config/express';
-import socketio from './routes/index.route';
+import mongoose from "mongoose";
+import util from "util";
+import config from "./config/env";
+import app from "./config/express";
+import socketio from "./routes/index.route";
 
-
-const debug = require('debug')('node-starter:index');
+const debug = require("debug")("node-starter:index");
 
 // make bluebird default Promise
-Promise = require('bluebird'); // eslint-disable-line no-global-assign
+Promise = require("bluebird"); // eslint-disable-line no-global-assign
 
 // plugin bluebird promise in mongoose
 mongoose.Promise = Promise;
 
 // connect to mongo db
-mongoose.connect(config.db, { 
-  useMongoClient: true
-});
-mongoose.connection.on('error', () => {
-  throw new Error(`unable to connect to database: ${config.db}`);
+mongoose.connect(config.db);
+mongoose.connection.on("error", () => {
+	throw new Error(`unable to connect to database: ${config.db}`);
 });
 
 // print mongoose logs in dev env
 if (config.MONGOOSE_DEBUG) {
-  mongoose.set('debug', (collectionName, method, query, doc) => {
-    debug(`${collectionName}.${method}`, util.inspect(query, false, 20), doc);
-  });
+	mongoose.set("debug", (collectionName, method, query, doc) => {
+		debug(`${collectionName}.${method}`, util.inspect(query, false, 20), doc);
+	});
 }
 
 // module.parent check is required to support mocha watch
 // src: https://github.com/mochajs/mocha/issues/1912
 if (!module.parent) {
-  // listen on port config.port
-  const server = app.listen(config.port, () => {
-    console.log(`🚀 server started on port ${config.port} (${config.env})`)
-  });
+	// listen on port config.port
+	const server = app.listen(config.port, () => {
+		console.log(`🚀 server started on port ${config.port} (${config.env})`);
+	});
 
-  socketio(server);
+	socketio(server);
 }
 
 export default app;

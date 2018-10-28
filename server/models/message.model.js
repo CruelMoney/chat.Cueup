@@ -46,13 +46,17 @@ const MessageSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
-MessageSchema.pre("save", async next => {
+MessageSchema.pre("save", async function() {
+	const msg = this.content;
+
 	try {
-		this.containsEmail = await nlp.containsEmail(this.content);
-		this.containsNumber = await nlp.containsNumber(this.content);
-		next();
+		const containsEmail = await nlp.containsEmail(msg);
+		const containsNumber = await nlp.containsNumber(msg);
+		this.containsEmail = containsEmail;
+		this.containsNumber = containsNumber;
 	} catch (error) {
-		next(new Error("Error analysing message"));
+		console.log(error);
+		return new Error("Error analysing message");
 	}
 });
 
