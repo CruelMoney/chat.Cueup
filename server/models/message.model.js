@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import httpStatus from "http-status";
 import APIError from "../helpers/APIError";
-import * as nlp from "../services/nlp";
 
 /**
  * Message Schema
@@ -41,24 +40,14 @@ const MessageSchema = new mongoose.Schema({
 	}
 });
 
-/**
- * - pre-post-save hooks
- * - validations
- * - virtuals
- */
-MessageSchema.pre("save", async function() {
-	const msg = this.content;
+// /**
+//  * - pre-post-save hooks
+//  * - validations
+//  * - virtuals
+//  */
+// MessageSchema.pre("save", async function() {
 
-	try {
-		const containsEmail = await nlp.containsEmail(msg);
-		const containsNumber = await nlp.containsNumber(msg);
-		this.containsEmail = containsEmail;
-		this.containsNumber = containsNumber;
-	} catch (error) {
-		console.log(error);
-		return new Error("Error analysing message");
-	}
-});
+// });
 
 /**
  * Methods
