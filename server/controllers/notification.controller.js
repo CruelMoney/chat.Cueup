@@ -4,6 +4,9 @@ import Message from "../models/message.model";
 import httpStatus from "http-status";
 import config from "../config/env";
 import * as emailNotifier from "../util/emailNotifier";
+import * as expoNotifier from "../util/expoNotifier";
+import User from "../models/user.model";
+
 /**
  * Get notifications for user.
  */
@@ -41,8 +44,26 @@ function newMessageNotification(message, originalMessage, socket) {
 	setTimeout(() => {
 		Message.findById(message._id)
 			.exec()
-			.then(savedMsg => {
+			.then(async savedMsg => {
 				if (savedMsg && !savedMsg.read && !!originalMessage.eventId) {
+					// try sending push notification
+					try {
+						const receiver = await User.findOne({
+							userId: savedMsg.to,
+							pushTokens: { $exists: true, $not: { $size: 0 } }
+						});
+
+						if (receiver) {
+							expoNotifier.sendNotifications({
+								message: savedMsg.content,
+								gigId: savedMsg.room,
+								tokens: receiver.pushTokens
+							});
+						}
+					} catch (error) {
+						console.error(error);
+					}
+
 					emailNotifier.sendNotification({
 						eventId: originalMessage.eventId,
 						receiverId: savedMsg.to,

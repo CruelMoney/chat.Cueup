@@ -4,6 +4,7 @@ import notificaitonCtr from "../../controllers/notification.controller";
 export default socket => {
 	const room = socket.handshake.query.room;
 	if (!!!room) return;
+	console.log("listening messages");
 
 	socket.join(room, () => {
 		// sending to all clients in room except sender

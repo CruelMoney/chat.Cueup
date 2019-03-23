@@ -32,6 +32,7 @@ if (!module.parent) {
 	// listen on port config.port
 	const server = app.listen(config.port, () => {
 		console.log(`🚀 server started on port ${config.port} (${config.env})`);
+		console.log("DB running on: " + config.db);
 	});
 
 	socketio(server);
