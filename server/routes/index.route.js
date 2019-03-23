@@ -11,6 +11,7 @@ export default server => {
 	// auth(io);
 
 	io.on("connection", socket => {
+		console.log("Trying connections");
 		tokenRoutes(socket);
 		messageRoutes(socket);
 		notificationRoutes(socket);
