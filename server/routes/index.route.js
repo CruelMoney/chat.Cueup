@@ -6,12 +6,9 @@ import tokenRoutes from "./listeners/token.route";
 
 export default server => {
 	const io = IO(server);
-
 	// no auth because people can access event without being logged in
 	// auth(io);
-
 	io.on("connection", socket => {
-		console.log("Trying connections");
 		tokenRoutes(socket);
 		messageRoutes(socket);
 		notificationRoutes(socket);

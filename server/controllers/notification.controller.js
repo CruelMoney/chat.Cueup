@@ -56,7 +56,7 @@ function newMessageNotification(message, originalMessage, socket) {
 						if (receiver) {
 							expoNotifier.sendNotifications({
 								message: savedMsg.content,
-								gigId: savedMsg.room,
+								data: { gigId: savedMsg.room },
 								tokens: receiver.pushTokens
 							});
 						}
@@ -77,4 +77,30 @@ function newMessageNotification(message, originalMessage, socket) {
 	}, 5000);
 }
 
-export default { listNotifications, newMessageNotification };
+/**
+ * New event notification
+ */
+const newEventNotification = async ({ userId, gigId }) => {
+	if (!userId) throw new Error("No userID");
+
+	const receiver = await User.findOne({
+		userId,
+		pushTokens: { $exists: true, $not: { $size: 0 } }
+	});
+
+	if (receiver) {
+		expoNotifier.sendNotifications({
+			title: "New Gig 🔥",
+			message: "You have a new gig request. Respond before it's too late.",
+			data: { gigId },
+			tokens: receiver.pushTokens
+		});
+		console.error("Event notification send");
+	}
+};
+
+export default {
+	listNotifications,
+	newMessageNotification,
+	newEventNotification
+};

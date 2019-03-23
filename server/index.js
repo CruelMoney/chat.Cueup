@@ -3,7 +3,7 @@ import util from "util";
 import "babel-polyfill";
 import config from "./config/env";
 import app from "./config/express";
-import socketio from "./routes/index.route";
+import ioServer from "./routes/index.route";
 
 const debug = require("debug")("node-starter:index");
 
@@ -30,12 +30,13 @@ if (config.MONGOOSE_DEBUG) {
 // src: https://github.com/mochajs/mocha/issues/1912
 if (!module.parent) {
 	// listen on port config.port
+
 	const server = app.listen(config.port, () => {
 		console.log(`🚀 server started on port ${config.port} (${config.env})`);
 		console.log("DB running on: " + config.db);
 	});
 
-	socketio(server);
+	ioServer(server);
 }
 
 export default app;

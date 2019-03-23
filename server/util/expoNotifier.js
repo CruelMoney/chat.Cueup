@@ -1,6 +1,6 @@
 import Expo from "expo-server-sdk";
 
-export const sendNotifications = async ({ message, gigId, tokens }) => {
+export const sendNotifications = async ({ title, message, data, tokens }) => {
 	return Promise.all(
 		tokens.map(async token => {
 			if (!Expo.isExpoPushToken(token)) {
@@ -12,11 +12,9 @@ export const sendNotifications = async ({ message, gigId, tokens }) => {
 			const expoMessage = {
 				to: token,
 				body: message,
-				title: "New Message",
+				title: title || "New Message 📫",
 				badge: 1,
-				data: {
-					gigId
-				}
+				data
 			};
 
 			try {
