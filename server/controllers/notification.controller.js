@@ -78,9 +78,9 @@ function newMessageNotification(message, originalMessage, socket) {
 }
 
 /**
- * New event notification
+ * New notification
  */
-const newEventNotification = async ({ userId, gigId }) => {
+const newNotification = async ({ userId, gigId, title, message }) => {
 	if (!userId) throw new Error("No userID");
 
 	const receiver = await User.findOne({
@@ -90,8 +90,8 @@ const newEventNotification = async ({ userId, gigId }) => {
 
 	if (receiver) {
 		expoNotifier.sendNotifications({
-			title: "New Gig 🔥",
-			message: "You have a new gig request. Respond before it's too late.",
+			title,
+			message,
 			data: { gigId },
 			tokens: receiver.pushTokens
 		});
@@ -102,5 +102,5 @@ const newEventNotification = async ({ userId, gigId }) => {
 export default {
 	listNotifications,
 	newMessageNotification,
-	newEventNotification
+	newNotification
 };
