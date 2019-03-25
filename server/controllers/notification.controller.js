@@ -38,32 +38,33 @@ function listNotifications(userId, socket) {
 /**
  * Emit new notifications.
  */
-function newMessageNotification(message, originalMessage, socket) {
+const newMessageNotification = async (message, originalMessage, socket) => {
 	if (!message || !message._id) return;
-	// Give the receiver 5 secs to read the message first
+
+	// try sending push notification
+	try {
+		const receiver = await User.findOne({
+			userId: originalMessage.to,
+			pushTokens: { $exists: true, $not: { $size: 0 } }
+		});
+
+		if (receiver) {
+			expoNotifier.sendNotifications({
+				message: originalMessage.content,
+				data: { gigId: originalMessage.room },
+				tokens: receiver.pushTokens
+			});
+		}
+	} catch (error) {
+		console.error(error);
+	}
+
+	// Give the receiver 5 secs to read the message first before sending email
 	setTimeout(() => {
 		Message.findById(message._id)
 			.exec()
-			.then(async savedMsg => {
+			.then(savedMsg => {
 				if (savedMsg && !savedMsg.read && !!originalMessage.eventId) {
-					// try sending push notification
-					try {
-						const receiver = await User.findOne({
-							userId: savedMsg.to,
-							pushTokens: { $exists: true, $not: { $size: 0 } }
-						});
-
-						if (receiver) {
-							expoNotifier.sendNotifications({
-								message: savedMsg.content,
-								data: { gigId: savedMsg.room },
-								tokens: receiver.pushTokens
-							});
-						}
-					} catch (error) {
-						console.error(error);
-					}
-
 					emailNotifier.sendNotification({
 						eventId: originalMessage.eventId,
 						receiverId: savedMsg.to,
@@ -75,7 +76,7 @@ function newMessageNotification(message, originalMessage, socket) {
 				}
 			});
 	}, 5000);
-}
+};
 
 /**
  * New notification
