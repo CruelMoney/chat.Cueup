@@ -4,9 +4,9 @@ import httpStatus from "http-status";
 import config from "../config/env";
 
 /**
- * Get notifications for user.
+ * save token so the user start receiving notifications on that device
  */
-const saveTokenToUser = async ({ userId, token, socket }) => {
+const saveTokenToUser = async ({ userId, token }) => {
 	let user = await User.findOne({ userId });
 	if (!user) {
 		user = new User({
@@ -16,7 +16,18 @@ const saveTokenToUser = async ({ userId, token, socket }) => {
 	}
 	user.pushTokens = [...user.pushTokens.filter(t => t !== token), token];
 	await user.save();
-	socket.emit("Token saved", user);
 };
 
-export default { saveTokenToUser };
+/**
+ * remove token so the user stops receiving notifications on that device
+ */
+const removeTokenFromUser = async ({ userId, token }) => {
+	let user = await User.findOne({ userId });
+	if (!user) {
+		throw new Error("User not found");
+	}
+	user.pushTokens = user.pushTokens.filter(t => t !== token);
+	await user.save();
+};
+
+export default { saveTokenToUser, removeTokenFromUser };
