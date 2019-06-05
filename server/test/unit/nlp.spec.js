@@ -62,31 +62,31 @@ describe("NLP", () => {
 		});
 	});
 
-	// describe("URL", () => {
-	// 	it("Detects url", () => {
-	// 		const SUT = "Hey ho heres my website http://www.cude.io.";
-	// 		const found = nlp.containsURL(SUT);
-	// 		expect(found).to.be.true;
-	// 	});
-	// 	it("No false positive", () => {
-	// 		const SUT = "Hey ho heres my website chrdengso@gmail.com.";
-	// 		const found = nlp.containsURL(SUT);
-	// 		expect(found).to.be.false;
-	// 	});
-	// 	it("Replaces URL", () => {
-	// 		const SUT = "Hey ho heres my website www.cude.io.";
-	// 		const fixed = nlp.replaceURLs(SUT);
-	// 		const exp = "Hey ho heres my website {{URL removed}}";
-	// 		expect(fixed).to.equal(exp);
-	// 	});
-	// });
+	describe("URL", () => {
+		it("Detects url", () => {
+			const SUT = "Hey ho heres my website http://www.cude.io";
+			const found = nlp.containsURL(SUT);
+			expect(found).to.be.true;
+		});
+		it("No false positive", () => {
+			const SUT = "Hey ho heres my website chrdengso@gmail.com.";
+			const found = nlp.containsURL(SUT);
+			expect(found).to.be.false;
+		});
+		it("Replaces URL", () => {
+			const SUT = "Hey ho heres my website www.cude.io. jhbjhb";
+			const fixed = nlp.replaceURLs(SUT);
+			const exp = "Hey ho heres my website {{URL removed}}. jhbjhb";
+			expect(fixed).to.equal(exp);
+		});
+	});
 
-	// it("Replaces everything", () => {
-	// 	const SUT =
-	// 		"Hey ho heres my website www.cude.io. And my email is chrdengso@gmail.com. my number is 81 23 12 32.";
-	// 	const fixed = nlp.replaceAll(SUT);
-	// 	const exp =
-	// 		"Hey ho heres my website {{URL removed}}. And my email is {{email removed}}. my number is {{number removed}}";
-	// 	expect(fixed).to.equal(exp);
-	// });
+	it("Replaces everything", () => {
+		const SUT =
+			"Hey ho heres my website www.cude.io. And my email is chrdengso@gmail.com. my number is 81 23 12 32.";
+		const fixed = nlp.replaceAll(SUT);
+		const exp =
+			"Hey ho heres my website {{URL removed}}. And my email is {{email removed}}. my number is {{number removed}}.";
+		expect(fixed).to.equal(exp);
+	});
 });
