@@ -17,13 +17,13 @@ describe("NLP", () => {
 		it("Replaces number", () => {
 			const SUT = "Hey ho heres my number 24658061.";
 			const fixed = nlp.replaceNumbers(SUT);
-			const exp = "Hey ho heres my number {{number removed}}.";
+			const exp = "Hey ho heres my number {{number hidden}}.";
 			expect(fixed).to.equal(exp);
 		});
 		it("Replaces indonesian number", () => {
 			const SUT = "Hey ho heres my WA +62 813 53857201‬.";
 			const fixed = nlp.replaceNumbers(SUT);
-			const exp = "Hey ho heres my WA {{number removed}}‬.";
+			const exp = "Hey ho heres my WA {{number hidden}}‬.";
 			expect(fixed).to.equal(exp);
 		});
 	});
@@ -57,7 +57,7 @@ describe("NLP", () => {
 		it("Replaces email", () => {
 			const SUT = "Hey ho heres my email chrdengso@gmail.com.";
 			const fixed = nlp.replaceEmails(SUT);
-			const exp = "Hey ho heres my email {{email removed}}.";
+			const exp = "Hey ho heres my email {{email hidden}}.";
 			expect(fixed).to.equal(exp);
 		});
 	});
@@ -76,7 +76,7 @@ describe("NLP", () => {
 		it("Replaces URL", () => {
 			const SUT = "Hey ho heres my website www.cude.io. jhbjhb";
 			const fixed = nlp.replaceURLs(SUT);
-			const exp = "Hey ho heres my website {{URL removed}}. jhbjhb";
+			const exp = "Hey ho heres my website {{URL hidden}}. jhbjhb";
 			expect(fixed).to.equal(exp);
 		});
 	});
@@ -86,7 +86,7 @@ describe("NLP", () => {
 			"Hey ho heres my website www.cude.io. And my email is chrdengso@gmail.com. my number is 81 23 12 32.";
 		const fixed = nlp.replaceAll(SUT);
 		const exp =
-			"Hey ho heres my website {{URL removed}}. And my email is {{email removed}}. my number is {{number removed}}.";
+			"Hey ho heres my website {{URL hidden}}. And my email is {{email hidden}} number is {{number hidden}}.";
 		expect(fixed).to.equal(exp);
 	});
 });
