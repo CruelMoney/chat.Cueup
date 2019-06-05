@@ -1,0 +1,92 @@
+import "dotenv/config";
+import { expect } from "chai";
+import * as nlp from "../../services/nlp";
+
+describe("NLP", () => {
+	describe("Phone number", () => {
+		it("Detects number", () => {
+			const SUT = "Hey ho heres my number 24658061.";
+			const found = nlp.containsNumber(SUT);
+			expect(found).to.be.true;
+		});
+		it("No false positive", () => {
+			const SUT = "Hey ho heres blabla do you want me to pay asd 4000usd.";
+			const found = nlp.containsNumber(SUT);
+			expect(found).to.be.false;
+		});
+		it("Replaces number", () => {
+			const SUT = "Hey ho heres my number 24658061.";
+			const fixed = nlp.replaceNumbers(SUT);
+			const exp = "Hey ho heres my number {{number removed}}.";
+			expect(fixed).to.equal(exp);
+		});
+		it("Replaces indonesian number", () => {
+			const SUT = "Hey ho heres my WA +62 813 53857201‬.";
+			const fixed = nlp.replaceNumbers(SUT);
+			const exp = "Hey ho heres my WA {{number removed}}‬.";
+			expect(fixed).to.equal(exp);
+		});
+	});
+
+	describe("Email", () => {
+		it("Detects email", () => {
+			const SUT = "Hey ho heres my email chrdengso@gmail.com.";
+			const found = nlp.containsEmail(SUT);
+			expect(found).to.be.true;
+		});
+
+		it("Detects naughty emails", () => {
+			const SUT = "Hey ho heres my email chrdengso[at]gmail.com. asdasda";
+			const found = nlp.containsEmail(SUT);
+			expect(found).to.be.true;
+			const SUT2 = "Hey ho heres my email chrdengso(AT)gmail.com. asdasda";
+			const found2 = nlp.containsEmail(SUT2);
+			expect(found2).to.be.true;
+			const SUT3 = "Hey ho heres my email chrdengso @ evi.com. asdasda";
+			const found3 = nlp.containsEmail(SUT3);
+			expect(found3).to.be.true;
+			const SUT4 = "Hey ho heres my email chrdengso @ hotmail.com. asdasda";
+			const found4 = nlp.containsEmail(SUT4);
+			expect(found4).to.be.true;
+		});
+		it("No false positive", () => {
+			const SUT = "Hey ho heres blabla do you want me to pay asd 4000usd.";
+			const found = nlp.containsEmail(SUT);
+			expect(found).to.be.false;
+		});
+		it("Replaces email", () => {
+			const SUT = "Hey ho heres my email chrdengso@gmail.com.";
+			const fixed = nlp.replaceEmails(SUT);
+			const exp = "Hey ho heres my email {{email removed}}.";
+			expect(fixed).to.equal(exp);
+		});
+	});
+
+	// describe("URL", () => {
+	// 	it("Detects url", () => {
+	// 		const SUT = "Hey ho heres my website http://www.cude.io.";
+	// 		const found = nlp.containsURL(SUT);
+	// 		expect(found).to.be.true;
+	// 	});
+	// 	it("No false positive", () => {
+	// 		const SUT = "Hey ho heres my website chrdengso@gmail.com.";
+	// 		const found = nlp.containsURL(SUT);
+	// 		expect(found).to.be.false;
+	// 	});
+	// 	it("Replaces URL", () => {
+	// 		const SUT = "Hey ho heres my website www.cude.io.";
+	// 		const fixed = nlp.replaceURLs(SUT);
+	// 		const exp = "Hey ho heres my website {{URL removed}}";
+	// 		expect(fixed).to.equal(exp);
+	// 	});
+	// });
+
+	// it("Replaces everything", () => {
+	// 	const SUT =
+	// 		"Hey ho heres my website www.cude.io. And my email is chrdengso@gmail.com. my number is 81 23 12 32.";
+	// 	const fixed = nlp.replaceAll(SUT);
+	// 	const exp =
+	// 		"Hey ho heres my website {{URL removed}}. And my email is {{email removed}}. my number is {{number removed}}";
+	// 	expect(fixed).to.equal(exp);
+	// });
+});

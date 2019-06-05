@@ -37,6 +37,10 @@ const MessageSchema = new mongoose.Schema({
 	containsNumber: {
 		type: Boolean,
 		default: false
+	},
+	containsURL: {
+		type: Boolean,
+		default: false
 	}
 });
 

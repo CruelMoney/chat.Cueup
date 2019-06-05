@@ -8,14 +8,15 @@ import * as nlp from "../services/nlp";
  * Create new message
  * @returns {Message}
  */
-async function sendMessage(msg, room, socket, cb) {
+async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
 	try {
 		const message = new Message(msg);
 		const content = message.content;
 
 		try {
-			message.containsEmail = await nlp.containsEmail(content);
-			message.containsNumber = await nlp.containsNumber(content);
+			message.containsEmail = nlp.containsEmail(content);
+			message.containsNumber = nlp.containsNumber(content);
+			message.containsUrl = nlp.containsURL(content);
 		} catch (error) {
 			console.log(error);
 			throw new Error("Error analysing message");
@@ -23,7 +24,7 @@ async function sendMessage(msg, room, socket, cb) {
 
 		if (
 			msg.declineOnContactInfo &&
-			(message.containsEmail || message.containsNumber)
+			(message.containsEmail || message.containsNumber || message.containsUrl)
 		) {
 			return cb(
 				handleError(
@@ -37,6 +38,13 @@ async function sendMessage(msg, room, socket, cb) {
 		}
 
 		const savedMessage = await message.save();
+		if (!showPersonalInformation) {
+			try {
+				savedMessage.content = nlp.replaceAll(savedMessage.content);
+			} catch (error) {
+				console.log(error);
+			}
+		}
 		socket.to(room).emit("new message", savedMessage);
 		cb(savedMessage);
 		return savedMessage;
@@ -52,10 +60,22 @@ async function sendMessage(msg, room, socket, cb) {
 /**
  * Get message of a specific room.
  */
-function listChat(room, socket) {
+function listChat({ room, socket, showPersonalInformation }) {
 	Message.find({ room: room })
 		.then(messages => {
-			socket.emit("initialize chat", messages);
+			let msgs = messages;
+			if (!showPersonalInformation) {
+				msgs = messages.map(msg => {
+					try {
+						msg.content = nlp.replaceAll(msg.content);
+					} catch (error) {
+						console.log(error);
+					}
+					return msg;
+				});
+			}
+
+			socket.emit("initialize chat", msgs);
 		})
 		.catch(e => {});
 }
