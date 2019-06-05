@@ -1,12 +1,13 @@
-import path from 'path';
+import path from "path";
 
-const _ = require('lodash');
+const _ = require("lodash");
 
-const env = process.env.NODE_ENV || 'development';
-const config = require(`./${env}`); // eslint-disable-line import/no-dynamic-require
+const env = process.env.NODE_ENV || "development";
+const config = require(`./${env}`).default; // eslint-disable-line import/no-dynamic-require
 
 const defaults = {
-  root: path.join(__dirname, '..', '..', '..')
+	root: path.join(__dirname, "..", "..", ".."),
+	...config
 };
 
-export default _.assign(defaults, config);
+export default defaults;

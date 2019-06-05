@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import util from "util";
-import "babel-polyfill";
 import config from "./config/env";
 import app from "./config/express";
 import ioServer from "./routes/index.route";

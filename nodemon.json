@@ -1,6 +1,6 @@
 {
-	"watch": ["src"],
+	"watch": ["server"],
 	"ext": "ts,js",
-	"ignore": ["src/**/*.spec.ts"],
-	"exec": "babel-node --extensions '.ts,.js' src/index.ts "
+	"ignore": ["server/**/*.spec.ts"],
+	"exec": "babel-node --extensions '.ts,.js' server/index.js "
 }
