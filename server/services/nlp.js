@@ -25,7 +25,7 @@ const containsURL = msg => {
 // runs recursively until the string is stipped of mathches
 const replacer = (
 	matchers,
-	replacement = "{{personal information removed}}"
+	replacement = "{{personal information hidden}}"
 ) => msg => {
 	const ss = matchers().reduce((matches, m) => {
 		const newMatches = msg.match(m);
@@ -41,14 +41,14 @@ const replacer = (
 	return replacer(matchers, replacement)(newMsg);
 };
 
-const replaceNumbers = replacer(numberMatchers, "{{number removed}}");
-const replaceEmails = replacer(emailMatchers, "{{email removed}}");
-const replaceURLs = replacer(urlMatchers, "{{URL removed}}");
+const replaceNumbers = replacer(numberMatchers, "{{number hidden}}");
+const replaceEmails = replacer(emailMatchers, "{{email hidden}}");
+const replaceURLs = replacer(urlMatchers, "{{URL hidden}}");
 
 const replaceAll = msg => {
-	msg = replacer(numberMatchers, "{{number removed}}")(msg);
-	msg = replacer(emailMatchers, "{{email removed}}")(msg);
-	return replacer(urlMatchers, "{{URL removed}}")(msg);
+	msg = replacer(numberMatchers, "{{number hidden}}")(msg);
+	msg = replacer(emailMatchers, "{{email hidden}}")(msg);
+	return replacer(urlMatchers, "{{URL hidden}}")(msg);
 };
 
 export {

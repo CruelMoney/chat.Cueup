@@ -17,10 +17,10 @@ export default socket => {
 		socket.to(room).emit("user offline");
 	});
 
-	socket.on("send message", (msg, fn) => {
+	socket.on("send message", (msg, cb) => {
 		socket.to(room).emit("stopped typing");
 		messageCtr
-			.sendMessage({ msg, room, socket, fn, showPersonalInformation })
+			.sendMessage({ msg, room, socket, cb, showPersonalInformation })
 			.then(savedMsg => {
 				if (!savedMsg) return;
 				notificaitonCtr.newMessageNotification(
