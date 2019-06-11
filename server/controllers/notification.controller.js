@@ -50,7 +50,7 @@ const newMessageNotification = async (message, originalMessage, socket) => {
 
 		if (receiver) {
 			expoNotifier.sendNotifications({
-				message: originalMessage.content,
+				message: message.content,
 				data: { gigId: originalMessage.room },
 				tokens: receiver.pushTokens
 			});
