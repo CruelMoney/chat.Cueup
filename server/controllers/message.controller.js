@@ -12,7 +12,6 @@ async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
 	try {
 		const message = new Message(msg);
 		const content = message.content;
-
 		try {
 			message.containsEmail = nlp.containsEmail(content);
 			message.containsNumber = nlp.containsNumber(content);
@@ -37,7 +36,8 @@ async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
 			);
 		}
 
-		const savedMessage = await message.save();
+		let savedMessage = await message.save();
+
 		if (!showPersonalInformation) {
 			try {
 				savedMessage.content = nlp.replaceAll(savedMessage.content);

@@ -23,11 +23,7 @@ export default socket => {
 			.sendMessage({ msg, room, socket, cb, showPersonalInformation })
 			.then(savedMsg => {
 				if (!savedMsg) return;
-				notificaitonCtr.newMessageNotification(
-					savedMsg,
-					savedMsg.content,
-					socket
-				);
+				notificaitonCtr.newMessageNotification(savedMsg, msg, socket);
 			});
 	});
 
