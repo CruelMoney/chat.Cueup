@@ -14,6 +14,8 @@ export const sendNotifications = async ({ title, message, data, tokens }) => {
 				body: message,
 				title: title || "New Message 📫",
 				badge: 1,
+				color: "#00d1ff",
+				icon: "https://cueup.io/favicon-32x32.png",
 				data
 			};
 
