@@ -10,10 +10,8 @@ import expressWinston from "express-winston";
 import expressValidation from "express-validation";
 import helmet from "helmet";
 import winstonInstance from "./winston";
-import routes from "../routes/index.route";
 import config from "./env";
 import APIError from "../helpers/APIError";
-import router from "../routes/listeners/api.route";
 
 const app = express();
 
@@ -49,9 +47,6 @@ if (config.env === "development") {
 		})
 	);
 }
-
-// mount api routes
-app.use("/", router);
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
