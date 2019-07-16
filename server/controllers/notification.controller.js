@@ -1,10 +1,6 @@
-import httpStatus from 'http-status';
-import APIError, { handleError } from '../helpers/APIError';
 import Notification from '../models/notification.model';
 import Message from '../models/message.model';
-import config from '../config/env';
-import * as emailNotifier from '../util/emailNotifier';
-import User from '../models/user.model';
+
 import { queueNewMessageNotification } from '../util/agendaSetup';
 
 /**

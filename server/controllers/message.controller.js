@@ -1,101 +1,93 @@
-import APIError, { handleError } from "../helpers/APIError";
-import Message from "../models/message.model";
-import httpStatus from "http-status";
-import config from "../config/env";
-import * as nlp from "../services/nlp";
+import httpStatus from 'http-status';
+import APIError, { handleError } from '../helpers/APIError';
+import Message from '../models/message.model';
+import config from '../config/env';
+import * as nlp from '../services/nlp';
 
 /**
  * Create new message
  * @returns {Message}
  */
 async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
-	try {
-		const message = new Message(msg);
-		const content = message.content;
-		try {
-			message.containsEmail = nlp.containsEmail(content);
-			message.containsNumber = nlp.containsNumber(content);
-			message.containsUrl = nlp.containsURL(content);
-		} catch (error) {
-			console.log(error);
-			throw new Error("Error analysing message");
-		}
+  try {
+    const message = new Message(msg);
+    const content = message.content;
+    try {
+      message.containsEmail = nlp.containsEmail(content);
+      message.containsNumber = nlp.containsNumber(content);
+      message.containsUrl = nlp.containsURL(content);
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error analysing message');
+    }
 
-		if (
-			msg.declineOnContactInfo &&
-			(message.containsEmail || message.containsNumber || message.containsUrl)
-		) {
-			return cb(
-				handleError(
-					new APIError(
-						"Message contains contact information",
-						httpStatus.FORBIDDEN,
-						true
-					)
-				)
-			);
-		}
+    if (
+      msg.declineOnContactInfo &&
+      (message.containsEmail || message.containsNumber || message.containsUrl)
+    ) {
+      return cb(
+        handleError(
+          new APIError('Message contains contact information', httpStatus.FORBIDDEN, true)
+        )
+      );
+    }
 
-		let savedMessage = await message.save();
+    let savedMessage = await message.save();
 
-		if (!showPersonalInformation) {
-			try {
-				savedMessage.content = nlp.replaceAll(savedMessage.content);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		socket.to(room).emit("new message", savedMessage);
-		cb(savedMessage);
-		return savedMessage;
-	} catch (e) {
-		return cb(
-			handleError(
-				new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)
-			)
-		);
-	}
+    if (!showPersonalInformation) {
+      try {
+        savedMessage.content = nlp.replaceAll(savedMessage.content);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    socket.to(room).emit('new message', savedMessage);
+    cb(savedMessage);
+    return savedMessage;
+  } catch (e) {
+    return cb(handleError(new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)));
+  }
 }
 
 /**
  * Get message of a specific room.
  */
 function listChat({ room, socket, showPersonalInformation }) {
-	Message.find({ room: room })
-		.then(messages => {
-			let msgs = messages;
-			if (!showPersonalInformation) {
-				msgs = messages.map(msg => {
-					try {
-						msg.content = nlp.replaceAll(msg.content);
-					} catch (error) {
-						console.log(error);
-					}
-					return msg;
-				});
-			}
+  Message.find({ room })
+    .then(messages => {
+      let msgs = messages;
+      if (!showPersonalInformation) {
+        msgs = messages.map(msg => {
+          try {
+            msg.content = nlp.replaceAll(msg.content);
+          } catch (error) {
+            console.log(error);
+          }
+          return msg;
+        });
+      }
 
-			socket.emit("initialize chat", msgs);
-		})
-		.catch(e => {});
+      socket.emit('initialize chat', msgs);
+    })
+    .catch(e => {});
 }
 
 /**
  * Indicates that the receiver has read his messages.
  */
 function readMessages(senderId, room, socket) {
-	Message.update(
-		{
-			room: room,
-			from: { $ne: senderId }
-		},
-		{ $set: { read: true } },
-		{ multi: true }
-	)
-		.then(_ => {
-			socket.to(room).emit("messages read");
-		})
-		.catch(e => {});
+  Message.update(
+    {
+      room,
+      from: { $ne: senderId },
+    },
+    { $set: { read: true } },
+    { multi: true }
+  )
+    .then(_ => {
+      socket.to(room).emit('messages read');
+    })
+    .catch(e => {});
 }
 
 /**
@@ -103,27 +95,23 @@ function readMessages(senderId, room, socket) {
  * @returns {Object}
  */
 function getUserChatStatus(userId, socket, cb) {
-	Message.find({ to: userId })
-		.then(messages => {
-			const status = messages.reduce((acc, msg) => {
-				const read = msg.read ? 1 : 0;
-				return {
-					...acc,
-					[msg.room]: {
-						read: acc[msg.room] ? acc[msg.room].read + read : read,
-						total: acc[msg.room] ? acc[msg.room].total + 1 : 1
-					}
-				};
-			}, {});
-			cb(status);
-		})
-		.catch(e => {
-			cb(
-				handleError(
-					new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)
-				)
-			);
-		});
+  Message.find({ to: userId })
+    .then(messages => {
+      const status = messages.reduce((acc, msg) => {
+        const read = msg.read ? 1 : 0;
+        return {
+          ...acc,
+          [msg.room]: {
+            read: acc[msg.room] ? acc[msg.room].read + read : read,
+            total: acc[msg.room] ? acc[msg.room].total + 1 : 1,
+          },
+        };
+      }, {});
+      cb(status);
+    })
+    .catch(e => {
+      cb(handleError(new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)));
+    });
 }
 
 export default { sendMessage, listChat, readMessages, getUserChatStatus };
