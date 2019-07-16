@@ -13,18 +13,21 @@ const connectionOpts = {
 
 const agenda = new Agenda(connectionOpts);
 
-const queueNewMessageNotification = async ({ gigId, senderId, receiverId, message }) => {
-  console.log('Queuing', {
-    gigId,
-    senderId,
-    receiverId,
-    message,
-  });
+const queueNewMessageNotification = async ({
+  gigId,
+  senderId,
+  receiverId,
+  message,
+  eventId,
+  messageId,
+}) => {
   await agenda.now('NEW_MESSAGE', {
     gigId,
     senderId,
     receiverId,
     message,
+    eventId,
+    messageId,
   });
 };
 
