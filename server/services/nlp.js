@@ -3,8 +3,10 @@ const urlMatchers = () => [
 ];
 
 const numberMatchers = () => [
-	/(\+)?(?:[0-9]\s*){8,}/ig
+	/\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)(?:(\s|\W|)+|$)){1,}/ig,
+	/(\+)?(?:[0-9]\s*){8,}/ig,
 ];
+
 
 const emailMatchers = () => [
 	/[A-Z0-9\._%+-]+(\s*(at|@)\s*|\s*[\[|\{|\(]+\s*(at|@)\s*[\)|\}\]]+\s*)([A-Z0-9\.-]+\s*(\.|\s*[\[|\{|\(]*\s*(dot|\.)\s*[\)|\}|\]]*\s*))+\s*[a-z]{2,6}/ig

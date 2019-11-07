@@ -26,6 +26,30 @@ describe('NLP', () => {
       const exp = 'Hey ho heres my WA {{number hidden}}‬.';
       expect(fixed).to.equal(exp);
     });
+
+    it('Replaces naughty number', () => {
+      const SUT =
+        'Hey ho heres my WA Plus seven, nine six three, five six eight, five two, five five.';
+      const fixed = nlp.replaceNumbers(SUT);
+      const exp = 'Hey ho heres my WA Plus {{number hidden}}';
+      expect(fixed).to.equal(exp);
+    });
+    it('Replaces naughty number 2', () => {
+      const SUT =
+        'Hey ho heres my WA Plus seven Nine six    three Five six eight five two five five';
+      const fixed = nlp.replaceNumbers(SUT);
+      const exp = 'Hey ho heres my WA Plus {{number hidden}}';
+      expect(fixed).to.equal(exp);
+    });
+
+    it('Replaces naughty number 3', () => {
+      const SUT =
+        'I have sent you a message on what’s app just in case my number is plus four four, seven four, six three five, six eight nine , eight six ';
+      const fixed = nlp.replaceNumbers(SUT);
+      const exp =
+        'I have sent you a message on what’s app just in case my number is plus {{number hidden}}';
+      expect(fixed).to.equal(exp);
+    });
   });
 
   describe('Email', () => {
