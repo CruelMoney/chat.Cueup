@@ -34,13 +34,13 @@ async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
 
     let savedMessage = await message.save();
 
-    // if (!showPersonalInformation) {
-    //   try {
-    //     savedMessage.content = nlp.replaceAll(savedMessage.content);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+    if (!showPersonalInformation) {
+      try {
+        savedMessage.content = nlp.replaceAll(savedMessage.content);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     socket.to(room).emit('new message', savedMessage);
     cb(savedMessage);
     return savedMessage;
@@ -56,16 +56,16 @@ function listChat({ room, socket, showPersonalInformation }) {
   Message.find({ room })
     .then(messages => {
       let msgs = messages;
-      // if (!showPersonalInformation) {
-      //   msgs = messages.map(msg => {
-      //     try {
-      //       msg.content = nlp.replaceAll(msg.content);
-      //     } catch (error) {
-      //       console.log(error);
-      //     }
-      //     return msg;
-      //   });
-      // }
+      if (!showPersonalInformation) {
+        msgs = messages.map(msg => {
+          try {
+            msg.content = nlp.replaceAll(msg.content);
+          } catch (error) {
+            console.log(error);
+          }
+          return msg;
+        });
+      }
 
       socket.emit('initialize chat', msgs);
     })
