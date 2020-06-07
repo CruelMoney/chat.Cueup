@@ -8,7 +8,7 @@ import * as nlp from '../services/nlp';
  * Create new message
  * @returns {Message}
  */
-async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
+async function sendMessage({ msg, roomId, socket, cb, showPersonalInformation }) {
   try {
     const message = new Message(msg);
     const content = message.content;
@@ -41,7 +41,7 @@ async function sendMessage({ msg, room, socket, cb, showPersonalInformation }) {
         console.log(error);
       }
     }
-    socket.to(room).emit('new message', savedMessage);
+    socket.to(roomId).emit('new message', savedMessage);
     cb(savedMessage);
     return savedMessage;
   } catch (e) {
@@ -75,7 +75,7 @@ function listChat({ room, socket, showPersonalInformation }) {
 /**
  * Indicates that the receiver has read his messages.
  */
-function readMessages(senderId, room, socket) {
+function readMessages(senderId, room, roomId, socket) {
   Message.update(
     {
       room,
@@ -85,7 +85,7 @@ function readMessages(senderId, room, socket) {
     { multi: true }
   )
     .then(_ => {
-      socket.to(room).emit('messages read');
+      socket.to(roomId).emit('messages read');
     })
     .catch(e => { });
 }

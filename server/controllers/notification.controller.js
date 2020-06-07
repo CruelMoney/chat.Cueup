@@ -25,7 +25,7 @@ function listNotifications(userId, socket) {
         ...notifications,
       ]);
     })
-    .catch(e => {});
+    .catch(e => { });
 }
 
 /**
@@ -44,6 +44,12 @@ const newMessageNotification = async (message, originalMessage, socket) => {
       eventId: originalMessage.eventId,
       messageId: message._id,
     });
+
+    const userRoomId = 'user/' + savedMsg.to;
+
+    socket
+      .to(userRoomId)
+      .emit("new notification", savedMsg.toNotification());
   } catch (error) {
     console.error(error);
   }

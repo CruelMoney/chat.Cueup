@@ -4,7 +4,10 @@ import messageCtr from '../../controllers/message.controller';
 export default socket => {
   const { userId, pushToken } = socket.handshake.query;
   if (!userId || !!pushToken) return;
-  socket.join(userId, () => {
+
+  const userRoomId = "user/" + userId;
+
+  socket.join(userRoomId, () => {
     notificationCtr.listNotifications(userId, socket);
   });
 
