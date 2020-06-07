@@ -45,11 +45,11 @@ const newMessageNotification = async (message, originalMessage, socket) => {
       messageId: message._id,
     });
 
-    const userRoomId = 'user/' + savedMsg.to;
+    const userRoomId = 'user/' + originalMessage.to;
 
     socket
       .to(userRoomId)
-      .emit("new notification", savedMsg.toNotification());
+      .emit("new notification", originalMessage.toNotification());
   } catch (error) {
     console.error(error);
   }
