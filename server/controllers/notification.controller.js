@@ -49,7 +49,7 @@ const newMessageNotification = async (message, originalMessage, socket) => {
 
     socket
       .to(userRoomId)
-      .emit("new notification", originalMessage.toNotification());
+      .emit("new notification", message.toNotification());
   } catch (error) {
     console.error(error);
   }
