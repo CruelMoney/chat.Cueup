@@ -42,6 +42,9 @@ const MessageSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  metadata: {
+    type: Object,
+  },
 });
 
 // /**

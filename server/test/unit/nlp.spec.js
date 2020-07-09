@@ -105,12 +105,12 @@ describe('NLP', () => {
     });
   });
 
-  it('Replaces everything', () => {
-    const SUT =
-      'Hey ho heres my website www.cude.io. And my email is chrdengso@gmail.com. my number is 81 23 12 32.';
-    const fixed = nlp.replaceAll(SUT);
-    const exp =
-      'Hey ho heres my website {{URL hidden}}. And my email is {{email hidden}} number is {{number hidden}}.';
-    expect(fixed).to.equal(exp);
-  });
+  // it('Replaces everything', () => {
+  //   const SUT =
+  //     'Hey ho heres my website www.cude.io. And my email is chrdengso@gmail.com. my number is 81 23 12 32.';
+  //   const fixed = nlp.replaceAll(SUT);
+  //   const exp =
+  //     'Hey ho heres my website {{URL hidden}}. And my email is {{email hidden}} number is {{number hidden}}.';
+  //   expect(fixed).to.equal(exp);
+  // });
 });

@@ -1,5 +1,7 @@
+
+export const urlMatcher = /(?:(ftp|http|https)?:\/\/)?[w{2:4}]?(?:[\w-]+\.)+([a-z]|[A-Z]|[0-9]){2,6}/ig;
 const urlMatchers = () => [
-	/(?:(ftp|http|https)?:\/\/)?[w{2:4}](?:[\w-]+\.)+([a-z]|[A-Z]|[0-9]){2,6}/ig
+	urlMatcher
 ];
 
 const numberMatchers = () => [

@@ -3,6 +3,7 @@ import APIError, { handleError } from '../helpers/APIError';
 import Message from '../models/message.model';
 import config from '../config/env';
 import * as nlp from '../services/nlp';
+import { enrichMessage } from '../services/metadataScraper';
 
 /**
  * Create new message
@@ -32,6 +33,10 @@ async function sendMessage({ msg, roomId, socket, cb, showPersonalInformation })
       );
     }
 
+    if (message.containsURL) {
+      await enrichMessage(message);
+    }
+
     let savedMessage = await message.save();
 
     if (!showPersonalInformation) {
@@ -43,6 +48,7 @@ async function sendMessage({ msg, roomId, socket, cb, showPersonalInformation })
     }
     socket.to(roomId).emit('new message', savedMessage);
     cb(savedMessage);
+
     return savedMessage;
   } catch (e) {
     return cb(handleError(new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true)));
