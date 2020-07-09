@@ -88,7 +88,31 @@ describe('NLP', () => {
 
   describe('URL', () => {
     it('Detects url', () => {
-      const SUT = 'Hey ho heres my website http://www.cude.io';
+      const SUT = 'Hey ho heres my website http://www.cude.io Hey ho heres my we';
+      const result = nlp.urlMatcher.test(SUT);
+      const found = nlp.containsURL(SUT);
+      console.log({ result, found });
+
+      expect(found).to.be.true;
+    });
+    it('Detects url 2', () => {
+      const SUT = 'Hey ho heres my we https://www.cude.io Hey ho heres my we';
+      const found = nlp.containsURL(SUT);
+      console.log({ found });
+      expect(found).to.be.true;
+    });
+    it('Detects url 3', () => {
+      const SUT = 'Hey ho heres my we www.cude.io Hey ho heres my we';
+      const found = nlp.containsURL(SUT);
+      expect(found).to.be.true;
+    });
+    it('Detects url 4', () => {
+      const SUT = 'Hey ho heres my we https://cude.io Hey ho heres my we';
+      const found = nlp.containsURL(SUT);
+      expect(found).to.be.true;
+    });
+    it('Detects url 5', () => {
+      const SUT = 'Hey ho heres my we http://cude.io Hey ho heres my we';
       const found = nlp.containsURL(SUT);
       expect(found).to.be.true;
     });

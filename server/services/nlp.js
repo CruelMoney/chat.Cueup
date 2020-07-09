@@ -1,17 +1,17 @@
 
-export const urlMatcher = /(?:(ftp|http|https)?:\/\/)?[w{2:4}]?(?:[\w-]+\.)+([a-z]|[A-Z]|[0-9]){2,6}/ig;
+export const urlMatcher = /(?:(http|https)?:\/\/)?[w{2:4}]?(?:[\w-]+\.)+([a-z]|[A-Z]|[0-9]){2,6}/imu;
 const urlMatchers = () => [
 	urlMatcher
 ];
 
 const numberMatchers = () => [
 	/\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)(?:(\s|\W|)+|$)){1,}/ig,
-	/(\+)?(?:[0-9]\s*){8,}/ig,
+	/(\+)?(?:[0-9]\s*){8,}/im,
 ];
 
 
 const emailMatchers = () => [
-	/[A-Z0-9\._%+-]+(\s*(at|@)\s*|\s*[\[|\{|\(]+\s*(at|@)\s*[\)|\}\]]+\s*)([A-Z0-9\.-]+\s*(\.|\s*[\[|\{|\(]*\s*(dot|\.)\s*[\)|\}|\]]*\s*))+\s*[a-z]{2,6}/ig
+	/[A-Z0-9\._%+-]+(\s*(at|@)\s*|\s*[\[|\{|\(]+\s*(at|@)\s*[\)|\}\]]+\s*)([A-Z0-9\.-]+\s*(\.|\s*[\[|\{|\(]*\s*(dot|\.)\s*[\)|\}|\]]*\s*))+\s*[a-z]{2,6}/im
 ];
 
 const containsNumber = msg => {
@@ -32,9 +32,10 @@ const replacer = (
 	replacement = "{{personal information hidden}}"
 ) => msg => {
 	const ss = matchers().reduce((matches, m) => {
-		const newMatches = msg.match(m);
-		if (newMatches) {
-			return [...new Set([...matches, ...newMatches])];
+		const [match] = msg.match(m) || [];
+
+		if (match) {
+			return [...new Set([...matches, match])];
 		}
 		return matches;
 	}, []);
