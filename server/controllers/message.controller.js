@@ -33,11 +33,15 @@ async function sendMessage({ msg, roomId, socket, cb, showPersonalInformation })
       );
     }
 
+    console.log('URL: ', message.containsURL);
+
     if (message.containsURL) {
       await enrichMessage(message);
     }
+    console.log({ message });
 
     let savedMessage = await message.save();
+    console.log({ savedMessage });
 
     if (!showPersonalInformation) {
       try {
