@@ -53,10 +53,7 @@ const replaceURLs = replacer(urlMatchers, "{{URL hidden}}");
 const replaceAll = msg => {
 	msg = replacer(numberMatchers, "{{number hidden}}")(msg);
 	msg = replacer(emailMatchers, "{{email hidden}}")(msg);
-
-	// show urls for now
-	// return replacer(urlMatchers, "{{URL hidden}}")(msg);
-	return msg;
+	return replacer(urlMatchers, "{{URL hidden}}")(msg);
 };
 
 export {
