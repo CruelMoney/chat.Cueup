@@ -33,9 +33,9 @@ async function sendMessage({ msg, roomId, socket, cb, showPersonalInformation })
       );
     }
 
-    console.log('URL: ', message.containsURL);
+    console.log('URL: ', message.containsUrl);
 
-    if (message.containsURL) {
+    if (message.containsUrl) {
       await enrichMessage(message);
     }
     console.log({ message });

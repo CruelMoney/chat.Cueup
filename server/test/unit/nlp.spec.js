@@ -88,11 +88,8 @@ describe('NLP', () => {
 
   describe('URL', () => {
     it('Detects url', () => {
-      const SUT = 'Hey ho heres my website http://www.cude.io Hey ho heres my we';
-      const result = nlp.urlMatcher.test(SUT);
+      const SUT = 'Hey ho heres my website http://www.cude.io';
       const found = nlp.containsURL(SUT);
-      console.log({ result, found });
-
       expect(found).to.be.true;
     });
     it('Detects url 2', () => {
