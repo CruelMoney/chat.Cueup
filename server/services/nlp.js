@@ -6,15 +6,35 @@ const urlMatchers = () => [
 
 const numberMatchers = () => [
 	/\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)(?:(\s|\W|)+|$)){1,}/ig,
-	/(\+)?(?:[0-9]\s*){8,}/im,
+	/(\+)?(?:[0-9](.*)*){8,}/im,
 ];
 
+const simpleEmailMatchers = [
+	/@/im,
+	/yahoo/im,
+	/yaho/im,
+	/gmail/im,
+	/outlook/im,
+	/icloud/im,
+	/hotmail/im,
+	/g mail/im,
 
+];
 const emailMatchers = () => [
-	/[A-Z0-9\._%+-]+(\s*(at|@)\s*|\s*[\[|\{|\(]+\s*(at|@)\s*[\)|\}\]]+\s*)([A-Z0-9\.-]+\s*(\.|\s*[\[|\{|\(]*\s*(dot|\.)\s*[\)|\}|\]]*\s*))+\s*[a-z]{2,6}/im
+	/[A-Z0-9\._%+-]+(\s*(at|@)\s*|\s*[\[|\{|\(]+\s*(at|@)\s*[\)|\}\]]+\s*)([A-Z0-9\.-]+\s*(\.|\s*[\[|\{|\(]*\s*(dot|\.)\s*[\)|\}|\]]*\s*))+\s*[a-z]{2,6}/im,
+	...simpleEmailMatchers,
 ];
+
+
+const stringContainsLetters = msg => {
+	return /[A-Za-z]/im.test(msg);
+}
 
 const containsNumber = msg => {
+	// strict match that requires letters in the message
+	if(!stringContainsLetters(msg)){
+		return true;
+	}
 	return numberMatchers().some(m => m.test(msg));
 };
 

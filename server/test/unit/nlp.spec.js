@@ -17,13 +17,13 @@ describe('NLP', () => {
     it('Replaces number', () => {
       const SUT = 'Hey ho heres my number 24658061.';
       const fixed = nlp.replaceNumbers(SUT);
-      const exp = 'Hey ho heres my number {{number hidden}}.';
+      const exp = 'Hey ho heres my number {{number hidden}}';
       expect(fixed).to.equal(exp);
     });
     it('Replaces indonesian number', () => {
       const SUT = 'Hey ho heres my WA +62 813 53857201‬.';
       const fixed = nlp.replaceNumbers(SUT);
-      const exp = 'Hey ho heres my WA {{number hidden}}‬.';
+      const exp = 'Hey ho heres my WA {{number hidden}}';
       expect(fixed).to.equal(exp);
     });
 
@@ -50,6 +50,31 @@ describe('NLP', () => {
         'I have sent you a message on what’s app just in case my number is plus {{number hidden}}';
       expect(fixed).to.equal(exp);
     });
+
+    it('Finds naughty number 4', () => {
+      const SUT = '5.5.4.6.3.8.7.6.4.';
+      const found = nlp.containsNumber(SUT);
+      expect(found).to.be.true;
+    });
+
+    it('Catches numbers only', () => {
+      const SUT = ' 1 ';
+      const found = nlp.containsNumber(SUT);
+      expect(found).to.be.true;
+
+      const SUT2 = ' 1 big speaker';
+      const found2 = nlp.containsNumber(SUT2);
+      expect(found2).to.be.false;
+    });
+
+    it('Catches numbers as text only', () => {
+      const SUT = 'one';
+      const found = nlp.containsNumber(SUT);
+      expect(found).to.be.true;
+      const SUT2 = 'two';
+      const found2 = nlp.containsNumber(SUT2);
+      expect(found2).to.be.true;
+    });
   });
 
   describe('Email', () => {
@@ -59,7 +84,7 @@ describe('NLP', () => {
       expect(found).to.be.true;
     });
 
-    it('Detects naughty emails', () => {
+    it('Detects naughty strings', () => {
       const SUT = 'Hey ho heres my email chrdengso[at]gmail.com. asdasda';
       const found = nlp.containsEmail(SUT);
       expect(found).to.be.true;
@@ -72,6 +97,30 @@ describe('NLP', () => {
       const SUT4 = 'Hey ho heres my email chrdengso @ hotmail.com. asdasda';
       const found4 = nlp.containsEmail(SUT4);
       expect(found4).to.be.true;
+      const SUT5 = 'DJ_oncue @ yahoo';
+      const found5 = nlp.containsEmail(SUT5);
+      expect(found5).to.be.true;
+      const SUT6 = '@';
+      const found6 = nlp.containsEmail(SUT6);
+      expect(found6).to.be.true;
+      const SUT7 = 'yaho';
+      const found7 = nlp.containsEmail(SUT7);
+      expect(found7).to.be.true;
+      const SUT8 = 'g mail';
+      const found8 = nlp.containsEmail(SUT8);
+      expect(found8).to.be.true;
+      const SUT9 = 'gmail';
+      const found9 = nlp.containsEmail(SUT9);
+      expect(found9).to.be.true;
+      const SUT10 = 'icloud';
+      const found10 = nlp.containsEmail(SUT10);
+      expect(found10).to.be.true;
+      const SUT11 = 'outlook';
+      const found11 = nlp.containsEmail(SUT11);
+      expect(found11).to.be.true;
+      const SUT12 = 'hotmail';
+      const found12 = nlp.containsEmail(SUT12);
+      expect(found12).to.be.true;
     });
     it('No false positive', () => {
       const SUT = 'Hey ho heres blabla do you want me to pay asd 4000usd.';
@@ -113,10 +162,10 @@ describe('NLP', () => {
       const found = nlp.containsURL(SUT);
       expect(found).to.be.true;
     });
-    it('No false positive', () => {
+    it('It matches email', () => {
       const SUT = 'Hey ho heres my website chrdengso@gmail.com.';
       const found = nlp.containsURL(SUT);
-      expect(found).to.be.false;
+      expect(found).to.be.true;
     });
     it('Replaces URL', () => {
       const SUT = 'Hey ho heres my website www.cude.io. jhbjhb';
