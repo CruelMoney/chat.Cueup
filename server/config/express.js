@@ -33,6 +33,13 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
+app.use('/health', (req, res) => {
+  return res.status(httpStatus.OK).json({
+    message: 'All good',
+    date: new Date(),
+  });
+});
+
 // enable detailed API logging in dev env
 if (config.env === 'development') {
   expressWinston.requestWhitelist.push('body');
