@@ -6,7 +6,7 @@ const urlMatchers = () => [
 
 const numberMatchers = () => [
 	/\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)(?:(\s|\W|)+|$)){1,}/ig,
-	/(\+)?(?:[0-9](.*)*){8,}/im,
+	/(\+)?(?:[0-9-]\s*){8,}/gi,
 ];
 
 const simpleEmailMatchers = [
@@ -32,6 +32,7 @@ const stringContainsLetters = msg => {
 
 const containsNumber = msg => {
 	// strict match that requires letters in the message
+	console.log("check letter")
 	if(!stringContainsLetters(msg)){
 		return true;
 	}

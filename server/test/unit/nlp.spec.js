@@ -17,13 +17,13 @@ describe('NLP', () => {
     it('Replaces number', () => {
       const SUT = 'Hey ho heres my number 24658061.';
       const fixed = nlp.replaceNumbers(SUT);
-      const exp = 'Hey ho heres my number {{number hidden}}';
+      const exp = 'Hey ho heres my number {{number hidden}}.';
       expect(fixed).to.equal(exp);
     });
     it('Replaces indonesian number', () => {
       const SUT = 'Hey ho heres my WA +62 813 53857201‬.';
       const fixed = nlp.replaceNumbers(SUT);
-      const exp = 'Hey ho heres my WA {{number hidden}}';
+      const exp = 'Hey ho heres my WA {{number hidden}}‬.';
       expect(fixed).to.equal(exp);
     });
 
@@ -74,6 +74,15 @@ describe('NLP', () => {
       const SUT2 = 'two';
       const found2 = nlp.containsNumber(SUT2);
       expect(found2).to.be.true;
+    });
+
+    it('Catches numbers 3', () => {
+      const SUT = 'Hello... Please contact  or on +966-59-373-3354 at your earliest convenience.';
+      const found = nlp.containsNumber(SUT);
+      expect(found).to.be.true;
+      const fixed = nlp.replaceNumbers(SUT);
+      const exp = 'Hello... Please contact  or on {{number hidden}}at your earliest convenience.';
+      expect(fixed).to.equal(exp);
     });
   });
 
