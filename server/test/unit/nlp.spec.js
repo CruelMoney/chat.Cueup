@@ -75,7 +75,6 @@ describe('NLP', () => {
       const found2 = nlp.containsNumber(SUT2);
       expect(found2).to.be.true;
     });
-
     it('Catches numbers 3', () => {
       const SUT = 'Hello... Please contact  or on +966-59-373-3354 at your earliest convenience.';
       const found = nlp.containsNumber(SUT);
