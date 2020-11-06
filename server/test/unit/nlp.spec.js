@@ -159,6 +159,13 @@ describe('NLP', () => {
       const exp = 'Hey ho heres my email {{email hidden}}.';
       expect(fixed).to.equal(exp);
     });
+
+    it('is pretty', () => {
+      const SUT = `Please contact me at adam.deverson@ihg.com or on at your earliest convenience.`;
+      const fixed = nlp.replaceEmails(SUT);
+      const exp = 'Please contact me at {{email hidden}} or on at your earliest convenience.';
+      expect(fixed).to.equal(exp);
+    });
   });
 
   describe('URL', () => {
