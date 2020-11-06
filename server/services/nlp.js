@@ -4,9 +4,10 @@ const urlMatchers = () => [
 	urlMatcher
 ];
 
-const numberMatchers = () => [
-	/\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)(?:(\s|\W|)+|$)){1,}/ig,
-	/(\+)?(?:[0-9]\s*){8,}/gi,
+const numberMatchers = (msg) => [
+	 ...getSmartNumberMatchers(msg),
+	 /\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)(?:(\s|\W|)+|$)){1,}/ig,
+	// /(\+)?(?:[0-9]\s*){8,}/gi,
 ];
 
 const simpleEmailMatchers = [
@@ -30,13 +31,34 @@ const stringContainsLetters = msg => {
 	return /[A-Za-z]/im.test(msg);
 }
 
+const getSmartNumberMatchers = (msg) => {
+
+	let smartMatchers = [];
+	// clean string
+	const cleaned = msg.replace(/[^A-Za-z0-9]/gi, "");
+	
+	// number 7 chars or longer
+	const matcher = /[0-9]{7,}/g;
+	const matches = cleaned.matchAll(matcher);
+
+	for (const match of matches) {
+		const startIndex = match.index;
+		const endIndex = match.index + match[0].length - 1;
+		const firstNumber = cleaned[startIndex];
+		const lastNumber = cleaned[endIndex];
+		
+		smartMatchers.push( new RegExp(`${firstNumber}(.*)${lastNumber}`, "gi"));		
+	}
+
+	return smartMatchers;
+}
+
 const containsNumber = msg => {
 	// strict match that requires letters in the message
-	console.log("check letter")
 	if(!stringContainsLetters(msg)){
 		return true;
 	}
-	return numberMatchers().some(m => m.test(msg));
+	return numberMatchers(msg).some(m => m.test(msg));
 };
 
 const containsEmail = msg => {
@@ -50,9 +72,11 @@ const containsURL = msg => {
 // runs recursively until the string is stipped of mathches
 const replacer = (
 	matchers,
-	replacement = "{{personal information hidden}}"
+	replacement = "{{personal information hidden}}",
+	maxRecursion = 10
 ) => msg => {
-	const ss = matchers().reduce((matches, m) => {
+	
+	const ss = matchers(msg).reduce((matches, m) => {
 		const [match] = msg.match(m) || [];
 
 		if (match) {
@@ -64,7 +88,10 @@ const replacer = (
 		return msg;
 	}
 	const newMsg = ss.reduce((newMsg, s) => newMsg.replace(s, replacement), msg);
-	return replacer(matchers, replacement)(newMsg);
+	if(maxRecursion === 0){
+		return newMsg
+	}
+	return replacer(matchers, replacement, maxRecursion-1)(newMsg);
 };
 
 const replaceNumbers = replacer(numberMatchers, "{{number hidden}}");
@@ -72,9 +99,9 @@ const replaceEmails = replacer(emailMatchers, "{{email hidden}}");
 const replaceURLs = replacer(urlMatchers, "{{URL hidden}}");
 
 const replaceAll = msg => {
-	msg = replacer(numberMatchers, "{{number hidden}}")(msg);
-	msg = replacer(emailMatchers, "{{email hidden}}")(msg);
-	return replacer(urlMatchers, "{{URL hidden}}")(msg);
+	msg = replaceNumbers(msg);
+	msg = replaceEmails(msg);
+	return replaceURLs(msg);
 };
 
 export {

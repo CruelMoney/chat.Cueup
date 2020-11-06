@@ -23,7 +23,7 @@ describe('NLP', () => {
     it('Replaces indonesian number', () => {
       const SUT = 'Hey ho heres my WA +62 813 53857201‬.';
       const fixed = nlp.replaceNumbers(SUT);
-      const exp = 'Hey ho heres my WA {{number hidden}}‬.';
+      const exp = 'Hey ho heres my WA +{{number hidden}}‬.';
       expect(fixed).to.equal(exp);
     });
 
@@ -80,7 +80,25 @@ describe('NLP', () => {
       const found = nlp.containsNumber(SUT);
       expect(found).to.be.true;
       const fixed = nlp.replaceNumbers(SUT);
-      const exp = 'Hello... Please contact  or on {{number hidden}}at your earliest convenience.';
+      const exp = 'Hello... Please contact  or on +{{number hidden}} at your earliest convenience.';
+      expect(fixed).to.equal(exp);
+    });
+
+    it('Catches number in beginning', () => {
+      const SUT = '966-59-373-3354 Please contact';
+      const found = nlp.containsNumber(SUT);
+      expect(found).to.be.true;
+      const fixed = nlp.replaceNumbers(SUT);
+      const exp = '{{number hidden}} Please contact';
+      expect(fixed).to.equal(exp);
+    });
+
+    it('Catches number in end', () => {
+      const SUT = 'Please contact 966-59-373-3354';
+      const found = nlp.containsNumber(SUT);
+      expect(found).to.be.true;
+      const fixed = nlp.replaceNumbers(SUT);
+      const exp = 'Please contact {{number hidden}}';
       expect(fixed).to.equal(exp);
     });
   });
