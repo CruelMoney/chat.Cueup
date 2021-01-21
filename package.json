@@ -48,7 +48,7 @@
     "mongoose": "^5.3.7",
     "morgan": "^1.9.1",
     "node-fetch": "^1.7.3",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.4.0",
     "socketio-jwt": "^4.5.0",
     "url-metadata": "^2.4.0",
     "winston": "^2.4.0"
